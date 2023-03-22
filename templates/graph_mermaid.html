@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mermaid Diagram</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    // Initialize Mermaid
+    mermaid.initialize({
+      startOnLoad: true
+    });
+
+    // Function to render the diagram
+    function renderDiagram(diagramString) {
+      // Render the diagram
+      mermaid.render('diagram', diagramString, function(svg) {
+        // Display the SVG in the output div
+        document.getElementById('diagram-output').innerHTML = svg;
+      });
+    }
+  </script>
+</head>
+<body onload="renderDiagram('{{ diagram_string|safe }}')">
+  <h1>Mermaid Diagram</h1>
+
+  <div id="diagram">
+    {% raw %}{{ diagram_string|safe }}{% endraw %}
+  </div>
+
+  <div id="diagram-output"></div>
+</body>
+</html>

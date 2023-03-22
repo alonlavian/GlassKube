@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="home">
+
+
+<h2>Kubernetes Deployment Hierarchy</h2>
+      <h1>Services </h1>
+
+    <ul>
+        {% for service in services %}
+        <li>{{ service.metadata.name }}</li>
+        {% endfor %}
+    </ul>
+      <h1>Pods </h1>
+
+      <ul>
+        {% for pod in pods %}
+        <li>{{ pod.metadata.name }}</li>
+        {% endfor %}
+    </ul>
+     </div>
+{% endblock %}
