@@ -1,6 +1,5 @@
 from kubernetes import client, config
 from flask import Flask, render_template
-from graph import generate_kubernetes_hierarchy
 from graph_mermaid import generate_kubernetes_hierarchy_mermaid
 
 # Load the Kubernetes configuration from the default location
@@ -32,15 +31,9 @@ def about():
 
 
 @app.route('/graph/')
-def graph():
-    graph = generate_kubernetes_hierarchy()
-    return render_template('graph.html', graph=graph)
-
-
-@app.route('/graph_mermaid')
 def graph_mermaid():
     graph = generate_kubernetes_hierarchy_mermaid()
-    return render_template('graph_mermaid.html', diagramString=graph)
+    return render_template('graph_m.html', diagramString=graph)
 
 
 # Run the Flask application

@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="graph_m">
+  <head>
+    <meta charset="utf-8">
+    <title>Mermaid Diagram</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true });</script>
+  </head>
+  <body>
+    <div class="mermaid">
+      {{ diagramString|safe }}
+    </div>
+    <script>
+      // Render the diagram using Mermaid
+      mermaid.init();
+    </script>
+  </body>
+      </div>
+{% endblock %}
