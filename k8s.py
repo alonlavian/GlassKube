@@ -1,13 +1,31 @@
-from kubernetes import client, config
+import os
+from kubernetes import client
+
+
+token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
+with open(token_path) as f:
+    token = f.read()
+
+print(token)
+# Configure the Kubernetes API client with the Service Account token
+configuration = client.Configuration()
+configuration.host = f"https://{os.environ['KUBERNETES_SERVICE_HOST']}:{os.environ['KUBERNETES_SERVICE_PORT']}"
+configuration.ssl_ca_cert = '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+configuration.verify_ssl = False
+configuration.debug = False
+configuration.assert_hostname = True
+configuration.api_key = {'authorization': f'Bearer {token}'}
+
+# Create a Kubernetes API client
+api_client = client.ApiClient(configuration=configuration)
+
+# Create a Kubernetes API clients
+core_api = client.CoreV1Api(api_client)
+api = client.AppsV1Api(api_client)
 
 
 def generate_kubernetes_hierarchy_mermaid():
-    # Load the Kubernetes configuration
-    config.load_kube_config()
 
-    # Create a Kubernetes API clients
-    api = client.AppsV1Api()
-    core_api = client.CoreV1Api()
 
     # Get the list of namespaces
     namespaces = core_api.list_namespace().items
@@ -46,6 +64,14 @@ def generate_kubernetes_hierarchy_mermaid():
 
     return chart_definition
 
+def list_kubernetes_objects():
+    # Retrieve information about the Pods in the cluster
+    pods = core_api.list_namespaced_pod(namespace='default').items
+
+    # Retrieve information about the Services in the cluster
+    services = core_api.list_namespaced_service(namespace='default').items
+
+    return pods, services
 
 if __name__ == '__main__':
     generate_kubernetes_hierarchy_mermaid()

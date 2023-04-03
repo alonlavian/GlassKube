@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: glasskube-service
+spec:
+  selector:
+    app: glasskube
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 5000
+  type: LoadBalancer
+
+

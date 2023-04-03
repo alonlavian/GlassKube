@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glasskube
+spec:
+  revisionHistoryLimit: 0 # Default to 10 if not specified
+  selector:
+    matchLabels:
+      app: glasskube
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: glasskube
+    spec:
+      serviceAccountName: glasskube
+      containers:
+      - name: glasskube
+        image: docker.io/alonlavian/glasskube:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+
