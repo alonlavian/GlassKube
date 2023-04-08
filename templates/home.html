@@ -3,15 +3,15 @@
   <div class="home">
 
 
-<h2>GlassKube application components</h2>
-      <h1>Services </h1>
+<h1>Application components</h1>
+      <h2>Services </h2>
 
     <ul>
         {% for service in services %}
         <li>{{ service.metadata.name }}</li>
         {% endfor %}
     </ul>
-      <h1>Pods </h1>
+      <h2>Pods </h2>
 
       <ul>
         {% for pod in pods %}

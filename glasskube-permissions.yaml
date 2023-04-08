@@ -12,7 +12,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: glasskube
-  namespace: default
+  namespace: glasskube
 
 
 ---
@@ -21,7 +21,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: glasskube
-  namespace: default
+  namespace: glasskube
   annotations:
     kubernetes.io/service-account.name: "glasskube"
 type: kubernetes.io/service-account-token
@@ -35,7 +35,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: glasskube
-  namespace: default
+  namespace: glasskube
 roleRef:
   kind: ClusterRole
   name: glasskube

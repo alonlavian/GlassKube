@@ -1,12 +1,11 @@
 import os
-from kubernetes import client
 
+from kubernetes import client
 
 token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 with open(token_path) as f:
     token = f.read()
 
-print(token)
 # Configure the Kubernetes API client with the Service Account token
 configuration = client.Configuration()
 configuration.host = f"https://{os.environ['KUBERNETES_SERVICE_HOST']}:{os.environ['KUBERNETES_SERVICE_PORT']}"
@@ -25,8 +24,6 @@ api = client.AppsV1Api(api_client)
 
 
 def generate_kubernetes_hierarchy_mermaid():
-
-
     # Get the list of namespaces
     namespaces = core_api.list_namespace().items
 
@@ -48,30 +45,38 @@ def generate_kubernetes_hierarchy_mermaid():
             chart_definition += f"    deployment_{namespace}_{deployment_name}({deployment_name}) \n"
             chart_definition += f"    namespace_{namespace} --> deployment_{namespace}_{deployment_name} \n"
 
-            replicasets = api.list_namespaced_replica_set(namespace=namespace, label_selector=f'app={deployment_name}').items
+            replicasets = api.list_namespaced_replica_set(namespace=namespace,
+                                                          label_selector=f'app={deployment_name}').items
             for replicaset in replicasets:
                 replicaset_name = replicaset.metadata.name
                 chart_definition += f"    replica_set_{deployment_name}_{replicaset_name}({replicaset_name}) \n"
                 chart_definition += f"    deployment_{namespace}_{deployment_name} --> replica_set_{deployment_name}_{replicaset_name} \n"
 
                 pods = core_api.list_namespaced_pod(namespace=namespace, label_selector=f'app={deployment_name}').items
+
+                current_pod_name = os.environ['MY_POD_NAME']
                 for pod in pods:
                     pod_name = pod.metadata.name
-                    chart_definition += f"    pod_{replicaset_name}_{pod_name}({pod_name}) \n"
+                    if pod_name == current_pod_name:
+                        chart_definition += f"    pod_{replicaset_name}_{pod_name}(({pod_name})) \n"
+                    else:
+                        chart_definition += f"    pod_{replicaset_name}_{pod_name}({pod_name}) \n"
                     chart_definition += f"    replica_set_{deployment_name}_{replicaset_name} --> pod_{replicaset_name}_{pod_name} \n"
 
     print(chart_definition)
 
     return chart_definition
 
+
 def list_kubernetes_objects():
     # Retrieve information about the Pods in the cluster
-    pods = core_api.list_namespaced_pod(namespace='default').items
+    pods = core_api.list_namespaced_pod(namespace='glasskube').items
 
     # Retrieve information about the Services in the cluster
-    services = core_api.list_namespaced_service(namespace='default').items
+    services = core_api.list_namespaced_service(namespace='glasskube').items
 
     return pods, services
+
 
 if __name__ == '__main__':
     generate_kubernetes_hierarchy_mermaid()

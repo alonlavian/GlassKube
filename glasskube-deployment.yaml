@@ -1,13 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: glasskube
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: glasskube
+  namespace: glasskube
 spec:
   revisionHistoryLimit: 0 # Default to 10 if not specified
   selector:
     matchLabels:
       app: glasskube
-  replicas: 1
+  replicas: 5
   template:
     metadata:
       labels:
@@ -20,4 +26,9 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
 
